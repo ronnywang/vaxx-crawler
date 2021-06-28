@@ -1,5 +1,6 @@
 <?php
 
+header('Content-Type: text/plain');
 $curl = curl_init();
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_COOKIEFILE, '');
