@@ -8,8 +8,9 @@ $tables = array(
 $baseId = 'tblgAuX1y8gCdMA0m';
 foreach ($tables as $table) {
     $offset = '';
-    $columns = null;
-    $fp = fopen(__DIR__ . '/airtable-data/' . $table . '.csv', 'w');
+    $columns = array('_id');
+    $target_file = __DIR__ . '/airtable-data/' . $table . '.csv';
+    $fp = fopen($target_file, 'w');
     while (true) {
         $url = sprintf("https://api.airtable.com/v0/appwPM9XFr1SSNjy4/%s?api_key=%s&offset=%s", urlencode($table), $key, $offset);
         error_log($url);
@@ -19,10 +20,13 @@ foreach ($tables as $table) {
             break;
         }
         foreach ($records as $record) {
-            if (is_null($columns)) {
-                unset($record->fields->{'Last Modified By'});
-                $columns = array_merge(array('_id'), array_keys(get_object_vars($record->fields)));
-                fputcsv($fp, $columns);
+            foreach ($record->fields as $k => $v) {
+                if (!is_scalar($v)) {
+                    continue;
+                }
+                if (!in_array($k, $columns)) {
+                    $columns[] = $k;
+                }
             }
 
             fputcsv($fp, array_map(function($id) use ($record) {
@@ -42,4 +46,5 @@ foreach ($tables as $table) {
         $offset = $obj->offset;
     }
     fclose($fp);
+    file_put_contents($target_file, implode(',', $columns) . "\n" . file_get_contents($target_file));
 }
