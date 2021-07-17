@@ -3,7 +3,7 @@
 include(__DIR__ . '/config.php');
 $key = getenv('AIRTABLE_KEY');
 $tables = array(
-    '施打點清單', '各縣市資料清單', '預約連結清單', '施打對象清單', '疫苗種類清單',
+    '施打點清單', '各縣市資料清單', '預約連結清單', 
 );
 $baseId = 'tblgAuX1y8gCdMA0m';
 foreach ($tables as $table) {
